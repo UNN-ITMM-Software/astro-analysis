@@ -1,0 +1,167 @@
+<h2 id="structure">Structure</h2>
+<p>This directory contains matlab-scripts:</p>
+<ol>
+<li><code>astrocyte_research.m</code> - function contained full loop of astrocyte analysis.</li>
+<li><code>main_form.fig</code>, <code>main_form.m</code> - GUI application for astrocyte analysis.</li>
+<li><code>calc_events_info.m</code> - function to calculate events information (first frame, last frame, duration, maximal projection, volume).</li>
+<li><code>calc_statistics.m</code> - function to calculate power law degree.</li>
+<li><code>convert_imgs2mat.m</code>, <code>convert_tif2mat.m</code> - auxiliary scripts for convert set of images as mat-object.</li>
+<li><code>disp_conf_parameters.m</code> - auxiliary script to display algorithm parameters (for GUI application).</li>
+<li><code>events_form.fig</code>, <code>events_form.m</code> - GUI application to represent events information and to show events.</li>
+<li><code>implay_map.m</code> - function to play video and adjust the color map.</li>
+<li><code>info_log.m</code> - function to log actions (for GUI applications).</li>
+<li><code>norm_data.m</code> - function to normalize data.</li>
+<li><code>parse_config.m</code> - function to parse configuration file contained algorithm parameters.</li>
+<li><code>save_events_info.m</code> - function to save events information to file in csv-format.</li>
+<li><code>save_imgs2avi.m</code> - function to save array of images to avi-file.</li>
+<li><code>save_log.m</code> - function to application log represented in GUI application.</li>
+<li><code>save_results2video.m</code> - function to save initial data, preprocessed data, df/f0 video and events video to the single avi-file (in <code>merged</code> mode) and to the separated files (in <code>splitted</code> mode).</li>
+<li><code>video_bm3d.m</code> - function contained BM3D call.</li>
+<li><code>view_all_distribution.m</code> - function to draw distributions for event durations and maximal projections.</li>
+<li><code>view_events.m</code> - function responsible for event representation at the set of frames.</li>
+<li><code>parse_config.m</code> - function to parse configuration file contained paths to binary files.</li>
+<li><code>config.txt</code> - template of configuration file.</li>
+<li><code>save_events_info.m</code> - function for saving events information.</li>
+</ol>
+<h2 id="users-guide-gui-application">User's Guide (GUI Application)</h2>
+<ol>
+<li>Open configuration file <code>matlab_scripts\config.txt</code>.</li><br />
+<li>Change paths to binary files of Boost, Matlab and OpenCV:</li><br />
+
+<code>BOOSTBINPATH = 'C:\boost_1_60_0\lib64-msvc-14.0'<br />
+MATLABBINPATH = 'C:\Program Files\MATLAB\R2010a\bin\win64'<br />
+OPENCVBINPATH = 'C:\Program Files\opencv2411\vs2015\bin\Release'<br />
+</code><br />
+
+<li>Change paths to compiled mex-files and bm3d implementation:</li><br />
+
+<code>MEXPATH = 'C:\astro-analysis\astro-analysis-build\bin'<br />
+BM3DPATH = 'C:\astro-analysis\BM3D'<br /></code><br />
+<li>Change algorithm parameters:
+<ul><br />
+<li><code>THRESHOLDDFF = 12</code> - threshold for background subtraction (prefferable value changes in the range from 10 to 20);</li>
+<li><code>WINDOWSIDE = 5</code> - side of sliding window (takes value 4, 5, 6). Note: 5 is recommended value;</li>
+<li><code>MINPOINTS = 3</code>, <code>EPS = 3</code> - DBscan parameters. Note: (3, 3) is recommended pair of values;</li>
+<li><code>THRESHOLDAREA = 0.5</code> - minimal part of intersection area to think of the pixels placed in the top left corners belong to the same event;</li>
+<li><code>THRESHOLDTIME = 0.1</code> - minimal part of time period intersection to think of the pixels placed in the top left corners belong to the same event;</li>
+<li><code>MINAREA = 10</code> - number of pixels corresponding the minimum event area;</li>
+<li><code>MINDURATION = 7</code> - number of frames corresponding the minimum event duration;</li>
+<br /></ul></li>
+<li>Save changes in <code>matlab_scripts\config.txt</code>.<br /><br />
+</li>
+<li>Open Matlab Command Window.</li>
+<li><p>Execute <code>main_form</code> application (fig. 1).</p></li>
+<figure>
+<img src="imgs/mainform.jpg" alt="Main Form" /><figcaption>Fig. 1. Main Form</figcaption>
+</figure>
+<li>Open mat-file with images using main menu <code>File-&gt;Open</code> (or <code>Ctrl+O</code>, fig. 2). You will see variable name in the field <code>Variables in mat-file</code>.</li>
+<figure>
+<img src="imgs/mainmenu.jpg" alt="Main menu" /><figcaption>Fig. 2. Main menu</figcaption>
+</figure>
+<li>In the field <code>Variables in mat-file</code> choose data that you want to analyze (fig. 1).</li><br />
+<li>Press checkbox <code>Apply BM3D filtering</code> if you have not yet apply BM3D filtering (fig. 3). Note: BM3D method works for a long time. Watch out for logs.</li>
+<figure>
+<img src="imgs/buttons.jpg" alt="Buttons" /><figcaption>Fig. 3. Buttons</figcaption>
+</figure>
+<li>Press button <code>Run calculations</code> (fig. 3).</li><br />
+<li>In the field <code>Log of program</code> you will see current stage of astrocyte analysis (fig. 1).</li>
+<li><p>As a consequence of video processing you will see several forms:</p>
+<ul>
+<li><code>Video (2D format)</code> - initial video of astrocyte activity (fig. 4).</li>
+</ul>
+<figure>
+<img src="imgs/1_zmax.jpg" alt="1_zmax" /><figcaption>Fig. 4. Initial video</figcaption>
+</figure>
+<ul>
+<li><code>Preprocessed video (bm3d + smoothing)</code> - video processed by BM3D filter and smoothing (fig. 5).</li>
+</ul>
+<figure>
+<img src="imgs/2_bm3d_smoothing.jpg" alt="2_bm3d_smoothing" /><figcaption>Fig. 5. Preprocessed video</figcaption>
+</figure>
+<ul>
+<li><code>dF/F0</code> - base line for each frame (fig. 6).</li>
+</ul>
+<figure>
+<img src="imgs/3_df_f0.jpg" alt="3_df_f0" /><figcaption>Fig. 6. Base line for each frame</figcaption>
+</figure>
+<ul>
+<li><code>events_form</code> - form contained events information (fig. 7).</li>
+</ul>
+<figure>
+<img src="imgs/events_form.jpg" alt="Events form" /><figcaption>Fig. 7. Events form</figcaption>
+</figure>
+<ul>
+<li><code>Duration (frames)</code> - complementary cumulative distribution function (CCDF) for events durations (frames), fig. 8.</li>
+</ul>
+<figure>
+<img src="imgs/ccdf_duration.jpg" alt="CCDF of duration" /><figcaption>Fig. 8. CCDF of duration</figcaption>
+</figure>
+<ul>
+<li><code>Max projection (pixels)</code> - complementary cumulative distribution function (CCDF) for maximal projections (pixels), fig. 9.</li>
+</ul>
+<figure>
+<img src="imgs/ccdf_max_proj.jpg" alt="CCDF of max projection" /><figcaption>Fig. 9. CCDF of max projection</figcaption>
+</figure></li>
+<li><p>Additional menu items of main form (fig. 2):</p>
+<ul>
+<li><code>Exit</code> (or <code>Ctrl+Q</code>) allows to exit application.</li>
+<li><code>Save log</code> (or <code>Ctrl+L</code>) saves all lines of the field <code>Log of program</code> to the text file.</li>
+<li><code>Save movies to .avi files</code> saves movies to the separated avi-files.</li>
+<li><code>Save output of algorithm steps to the single .avi file</code> (or <code>Ctrl+S</code>) saves movies to the single avi-file (<a href="https://yadi.sk/i/tTnVzfZbsBX9o">example</a>).</li>
+</ul></li>
+<li><p>Additional menu items and possibilies of events form (fig. 7):</p>
+<ul>
+<li><code>Save events information</code> item saves events information to the text file in CSV-format.</li>
+<li>Choose events form the <code>List of events</code> and data (checkbox <code>Source</code> meas initial data, <code>BM3D</code> means preprocessed data, <code>DF/F0</code> means df/f0 data) to draw set of interested events (fig. 10).</li>
+</ul>
+<figure>
+<img src="imgs/events.jpg" alt="Constructed events" /><figcaption>Fig. 10. Constructed events</figcaption>
+</figure>
+</li>
+</ol>
+<h2 id="users-guide-research-application">User's Guide (Research Application)</h2>
+<p>To execute &quot;sliding&quot; window method you should perform the following steps:</p>
+<ol>
+<li>Open Matlab Command Window.</li>
+<li>Load mat-file contained astrocyte video:</li>
+<p><code>input_data = load(&lt;file_name&gt;)</code></p>
+<li>Open configuration file <code>matlab_scripts\config.txt</code>.</li><br />
+<li>Change paths to binary files of Boost, Matlab and OpenCV:</li><br />
+
+<code>BOOSTBINPATH = 'C:\boost_1_60_0\lib64-msvc-14.0'<br />
+MATLABBINPATH = 'C:\Program Files\MATLAB\R2010a\bin\win64'<br />
+OPENCVBINPATH = 'C:\Program Files\opencv2411\vs2015\bin\Release'<br />
+</code><br />
+
+<li>Change paths to compiled mex-files and bm3d implementation:</li><br />
+
+<code>MEXPATH = 'C:\astro-analysis\astro-analysis-build\bin'<br />
+BM3DPATH = 'C:\astro-analysis\BM3D'<br /></code><br />
+<li>Change algorithm parameters:
+<ul><br />
+<li><code>THRESHOLDDFF = 12</code> - threshold for background subtraction (prefferable value changes in the range from 10 to 20);</li>
+<li><code>WINDOWSIDE = 5</code> - side of sliding window (takes value 4, 5, 6). Note: 5 is recommended value;</li>
+<li><code>MINPOINTS = 3</code>, <code>EPS = 3</code> - DBscan parameters. Note: (3, 3) is recommended pair of values;</li>
+<li><code>THRESHOLDAREA = 0.5</code> - minimal part of intersection area to think of the pixels placed in the top left corners belong to the same event;</li>
+<li><code>THRESHOLDTIME = 0.1</code> - minimal part of time period intersection to think of the pixels placed in the top left corners belong to the same event;</li>
+<li><code>MINAREA = 10</code> - number of pixels corresponding the minimum event area;</li>
+<li><code>MINDURATION = 7</code> - number of frames corresponding the minimum event duration;</li>
+<br /></ul></li>
+<li>Save changes in <code>matlab_scripts\config.txt</code>.<br /><br />
+</li>
+<li>Construct events in astrocyte step-by-step using function <code>astrocyte_research</code>.</li>
+<p><code>[data_2d_video, bm3d_video, preprocessed_video, df_f0_video, events_3d, events_info] = astrocyte_research(input_video, on_bm3d_filtering);</code></p>
+<p>Function <code>astrocyte_research</code> takes the following input parameters:</p>
+<ul>
+<li><code>input_video</code> - initial video (3d or 4d matrix, in the case of 4d matrix maximal projection will be computed);</li>
+<li><code>on_bm3d_filtering</code> - flag to turn on BM3D filtering (<code>true</code> - ON, <code>false</code> - OFF). Note: BM3D method works for a long time. Watch out for logs.</li>
+</ul>
+<p>Function <code>astrocyte_research</code> returns the following parameters:</p>
+<ul>
+<li><code>data_2d_video</code> - initial data;</li>
+<li><code>bm3d_video</code> - data after BM3D filtering;</li>
+<li><code>preprocessed_video</code> - data after normalization and smoothing;</li>
+<li><code>df_f0_video</code> - dF/F0 for each frame;</li>
+<li><code>events_3d</code> - constructed events, each event has it's own identifier (doesn't equal it's index!) and is represented as a set of points (x, y, t), where (x, y) - pixel placement, t - frame index;</li>
+<li><code>events_info</code> - computed events information (duration, maximal projection).</li>
+</ul>
