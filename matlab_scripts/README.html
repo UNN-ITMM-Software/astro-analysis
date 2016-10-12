@@ -107,7 +107,7 @@ BM3DPATH = 'C:\astro-analysis\BM3D'<br /></code><br />
 <li><code>Exit</code> (or <code>Ctrl+Q</code>) allows to exit application.</li>
 <li><code>Save log</code> (or <code>Ctrl+L</code>) saves all lines of the field <code>Log of program</code> to the text file.</li>
 <li><code>Save movies to .avi files</code> saves movies to the separated avi-files.</li>
-<li><code>Save output of algorithm steps to the single .avi file</code> (or <code>Ctrl+S</code>) saves movies to the single avi-file (<a href="https://yadi.sk/i/tTnVzfZbsBX9o">example</a>).</li>
+<li><code>Save output of algorithm steps to the single .avi file</code> (or <code>Ctrl+S</code>) saves movies to the single avi-file (<a href="https://www.dropbox.com/s/qoxt4g9aeesa152/2013-05-22_fileNo03.avi?dl=0">example</a>).</li>
 </ul></li>
 <li><p>Additional menu items and possibilies of events form (fig. 7):</p>
 <ul>
@@ -150,7 +150,7 @@ BM3DPATH = 'C:\astro-analysis\BM3D'<br /></code><br />
 <li>Save changes in <code>matlab_scripts\config.txt</code>.<br /><br />
 </li>
 <li>Construct events in astrocyte step-by-step using function <code>astrocyte_research</code>.</li>
-<p><code>[data_2d_video, bm3d_video, preprocessed_video, df_f0_video, events_3d, events_info] = astrocyte_research(input_video, on_bm3d_filtering);</code></p>
+<p><code>[data_2d_video, bm3d_video, preprocessed_video, df_f0_video, events_3d, events_info] = astrocyte_research(input_data.data_zmax, on_bm3d_filtering);</code></p>
 <p>Function <code>astrocyte_research</code> takes the following input parameters:</p>
 <ul>
 <li><code>input_video</code> - initial video (3d or 4d matrix, in the case of 4d matrix maximal projection will be computed);</li>

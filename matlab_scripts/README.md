@@ -143,7 +143,7 @@ This directory contains matlab-scripts:
      - `Save log` (or `Ctrl+L`) saves all lines of the field `Log of program` to the text file.
      - `Save movies to .avi files` saves movies to the separated avi-files.
      - `Save output of algorithm steps to the single .avi file` (or `Ctrl+S`) saves movies
-       to the single avi-file ([example](https://yadi.sk/i/tTnVzfZbsBX9o)).
+       to the single avi-file ([example](https://www.dropbox.com/s/qoxt4g9aeesa152/2013-05-22_fileNo03.avi?dl=0)).
   
   1. Additional menu items and possibilies of events form (fig. 7):
   
@@ -205,7 +205,7 @@ To execute "sliding" window method you should perform the following steps:
   
   ```matlab
   [data_2d_video, bm3d_video, preprocessed_video, df_f0_video, ...
-    events_3d, events_info] = astrocyte_research(input_video, on_bm3d_filtering);
+    events_3d, events_info] = astrocyte_research(input_data.data_zmax, on_bm3d_filtering);
   ```
   
   
