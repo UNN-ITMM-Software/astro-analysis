@@ -1,4 +1,4 @@
-# Software for astrocyte analysis
+# CalciumCV: Computer vision software for calcium signaling in astrocytes
 
 ## Introduction
 
