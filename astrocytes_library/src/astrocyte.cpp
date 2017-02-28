@@ -15,6 +15,8 @@ void astrocyte::normalization(const video_data & source_video,
 	video_data & preprocessed_video, const uchar lb, const uchar rb)
 {
 	astro_log.set_info(L"Normalization.");
+    astro_log.set_info(L"Left bound: " + to_wstring(lb));
+    astro_log.set_info(L"Right bound: " + to_wstring(rb));
 	preprocessed_video.reset(new uchar[source_video.size], source_video.n,
 		source_video.m, source_video.nt, CV_8U);
 	double min_val, max_val;
@@ -65,10 +67,11 @@ void astrocyte::smoothing(video_data & preprocessed_video,
 }
 
 void astrocyte::preprocessing(const video_data & source_video, 
-	video_data & preprocessed_video, bool smooth_by_time)
+	video_data & preprocessed_video, const uchar lb, const uchar rb,
+    bool smooth_by_time)
 {
 	astro_log.set_info (L"Preprocessing." L" nt = " + to_wstring (source_video.nt));
-	normalization(source_video, preprocessed_video);
+	normalization(source_video, preprocessed_video, lb, rb);
 	if (!smooth_by_time)
 	{
 		astro_log.set_info(L"~Preprocessing.");

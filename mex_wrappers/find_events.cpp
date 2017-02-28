@@ -16,67 +16,86 @@ params = struct('a', " + to_string (LENGTH_A) + ", " +
 
 void mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
-	if (nrhs == 0) {
-		mexErrMsgIdAndTxt ("MyToolbox:find_events:help", help.c_str());
-	}
+    if (nrhs == 0)
+    {
+        mexErrMsgIdAndTxt("MyToolbox:find_events:help", help.c_str());
+    }
 	
 	std::string var_name = "";
-	if (nrhs > 1 && mxIsChar (prhs[1]))
-		var_name = (char *) mxGetPr(prhs[1]);
-	auto log_update = [](const logger & lg) {
-		if (lg.get_history ().empty ()) return;
-		const vector <record> v = lg.get_history ();
-		const auto & last = lg.get_history ().back ();
-		using namespace std::chrono;
-		char buff[100];
-		
-		milliseconds ms = duration_cast<milliseconds>(last.log_time),
-					 dif(0), duration(0);
-		if (lg.get_history().size() > 1)
-		{
-			dif = duration_cast<milliseconds>(last.log_time - 
-					(lg.get_history().end() - 2)->log_time);
-		}
-		if (lg.get_history().size() > 1)
-		{
-			duration = duration_cast<milliseconds>(last.log_time - 
-				     lg.get_history().begin()->log_time);
-		}
-		std::string message = std::wstring_convert<
-			std::codecvt_utf8<wchar_t>> ().to_bytes (last.message);
-		time_t sec = duration_cast<seconds>(last.log_time).count ();
-		tm * t = localtime (&sec);
-		strftime (buff, 100, "%Y-%m-%d %H:%M:%S", t);
-		mexPrintf ("%s.%03d | elapsed %7I64d ms | elapsed from start %7I64d ms | %s\n",
-			buff, ms % 1000, dif, duration, message.c_str ());
-		mexEvalString ("drawnow;");
-	};
+    if (nrhs > 1 && mxIsChar(prhs[1]))
+    {
+        var_name = (char *)mxGetPr(prhs[1]);
+    }
+    auto log_update = [](const logger & lg)
+    {
+        if (lg.get_history().empty()) return;
+        const vector <record> v = lg.get_history();
+        const auto & last = lg.get_history().back();
+        using namespace std::chrono;
+        char buff[100];
+
+        milliseconds ms = duration_cast<milliseconds>(last.log_time),
+            dif(0), duration(0);
+        if (lg.get_history().size() > 1)
+        {
+            dif = duration_cast<milliseconds>(last.log_time -
+                (lg.get_history().end() - 2)->log_time);
+        }
+        if (lg.get_history().size() > 1)
+        {
+            duration = duration_cast<milliseconds>(last.log_time -
+                lg.get_history().begin()->log_time);
+        }
+        std::string message = std::wstring_convert<
+            std::codecvt_utf8<wchar_t>> ().to_bytes(last.message);
+        time_t sec = duration_cast<seconds>(last.log_time).count();
+        tm * t = localtime(&sec);
+        strftime(buff, 100, "%Y-%m-%d %H:%M:%S", t);
+        mexPrintf("%s.%03d | elapsed %7I64d ms | elapsed from start %7I64d ms | %s\n",
+            buff, ms % 1000, dif, duration, message.c_str());
+        mexEvalString("drawnow;");
+    };
 	
 	astrocyte * astro = nullptr;
 	segmentation_settings segm;
-	if (mxIsStruct (prhs[nrhs - 1])) {
-		const mxArray * param = prhs[nrhs - 1];
-		int cnt = mxGetNumberOfFields (param);
-		for (int i = 0; i < cnt; i++) {
-			std::string name_field = mxGetFieldNameByNumber (param, i);
-			mxArray * cur = mxGetFieldByNumber (param, 0, i);
-			if (name_field == "a") {
-				if (mxIsInt32 (cur)) segm.a = *(int *)mxGetData (cur);
-			} else if (name_field == "min_points") {
-				if (mxIsInt32 (cur)) segm.min_points = *(int *)mxGetData (cur);
-			} else if (name_field == "eps") {
-				if (mxIsInt32 (cur)) segm.eps= *(int *)mxGetData (cur);
-			} else if (name_field == "thr_area") {
-				if (mxIsDouble (cur)) segm.thr_area = *(double *)mxGetData (cur);
-			} else if (name_field == "thr_time") {
-				if (mxIsDouble (cur)) segm.thr_time = *(double *)mxGetData (cur);
-			} else if (name_field == "min_area") {
-				if (mxIsInt32 (cur)) segm.min_area = *(int *)mxGetData (cur);
-			} else if (name_field == "min_duration") {
-				if (mxIsInt32 (cur)) segm.min_duration = *(int *)mxGetData (cur);
-			}
-		}
-	}
+    if (mxIsStruct(prhs[nrhs - 1]))
+    {
+        const mxArray * param = prhs[nrhs - 1];
+        int cnt = mxGetNumberOfFields(param);
+        for (int i = 0; i < cnt; i++)
+        {
+            std::string name_field = mxGetFieldNameByNumber(param, i);
+            mxArray * cur = mxGetFieldByNumber(param, 0, i);
+            if (name_field == "a")
+            {
+                if (mxIsInt32(cur)) segm.a = *(int *)mxGetData(cur);
+            }
+            else if (name_field == "min_points")
+            {
+                if (mxIsInt32(cur)) segm.min_points = *(int *)mxGetData(cur);
+            }
+            else if (name_field == "eps")
+            {
+                if (mxIsInt32(cur)) segm.eps = *(int *)mxGetData(cur);
+            }
+            else if (name_field == "thr_area")
+            {
+                if (mxIsDouble(cur)) segm.thr_area = *(double *)mxGetData(cur);
+            }
+            else if (name_field == "thr_time")
+            {
+                if (mxIsDouble(cur)) segm.thr_time = *(double *)mxGetData(cur);
+            }
+            else if (name_field == "min_area")
+            {
+                if (mxIsInt32(cur)) segm.min_area = *(int *)mxGetData(cur);
+            }
+            else if (name_field == "min_duration")
+            {
+                if (mxIsInt32(cur)) segm.min_duration = *(int *)mxGetData(cur);
+            }
+        }
+    }
 	
 	
 	if (mxIsNumeric (prhs[0])) 
@@ -85,8 +104,14 @@ void mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		video_data df_f0_video;
 		const mxArray * input_video = prhs[0];
 		int img_type;
-		if (mxIsUint8 (input_video)) img_type = CV_8UC1;
-		else mexErrMsgIdAndTxt ("MyToolbox:find_events:help", help.c_str ());
+        if (mxIsUint8(input_video))
+        {
+            img_type = CV_8UC1;
+        }
+        else
+        {
+            mexErrMsgIdAndTxt("MyToolbox:find_events:help", help.c_str());
+        }
 		int num = (int)mxGetNumberOfDimensions (input_video);
 		const mwSize *sz = mxGetDimensions (input_video);
 		if (num == 3)
@@ -150,56 +175,56 @@ void mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		plhs[0] = mxDuplicateArray(events_3d_strarr);
 		mxDestroyArray(events_3d_strarr);
 	}
-	if (nlhs > 1) 
-	{		
-		auto info = astro->selected_components;
-		mexPrintf("Number of proccessed events: %d\n", info.size());
-		const int CNT_INFO_FIELDS = 6;
-		const char * info_field_names[CNT_INFO_FIELDS] = 
-			{ "numbers", "ids", "starts", "finishes", 
-			  "durations", "max_projections" };
-		size_t dims[1] = { 1 };
-		mxArray * pa_cur = mxCreateStructArray (1, dims, CNT_INFO_FIELDS, info_field_names);
-		{
-			size_t dims[2] = { info.size(), 1 };
-			mxArray * value = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
-			for (int i = 0; i < info.size (); i++) 
-				*((int *)mxGetPr (value) + i) = info[i].key;
-			mxSetField(pa_cur, 0, "ids", mxDuplicateArray(value));
-			mxDestroyArray (value);
+    if (nlhs > 1)
+    {
+        auto info = astro->selected_components;
+        mexPrintf("Number of proccessed events: %d\n", info.size());
+        const int CNT_INFO_FIELDS = 6;
+        const char * info_field_names[CNT_INFO_FIELDS] =
+        { "numbers", "ids", "starts", "finishes",
+          "durations", "max_projections" };
+        size_t dims[1] = { 1 };
+        mxArray * pa_cur = mxCreateStructArray(1, dims, CNT_INFO_FIELDS, info_field_names);
+        {
+            size_t dims[2] = { info.size(), 1 };
+            mxArray * value = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
+            for (int i = 0; i < info.size(); i++)
+                *((int *)mxGetPr(value) + i) = info[i].key;
+            mxSetField(pa_cur, 0, "ids", mxDuplicateArray(value));
+            mxDestroyArray(value);
 
-			value = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
-			for (int i = 0; i < info.size (); i++) 
-				*((int *)mxGetPr (value) + i) = info[i].start;
-			mxSetField(pa_cur, 0, "starts", mxDuplicateArray(value));
-			mxDestroyArray (value);
+            value = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
+            for (int i = 0; i < info.size(); i++)
+                *((int *)mxGetPr(value) + i) = info[i].start;
+            mxSetField(pa_cur, 0, "starts", mxDuplicateArray(value));
+            mxDestroyArray(value);
 
-			value = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
-			for (int i = 0; i < info.size (); i++) 
-				*((int *)mxGetPr (value) + i) = info[i].finish;
-			mxSetField(pa_cur, 0, "finishes", mxDuplicateArray (value));
-			mxDestroyArray (value);
+            value = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
+            for (int i = 0; i < info.size(); i++)
+                *((int *)mxGetPr(value) + i) = info[i].finish;
+            mxSetField(pa_cur, 0, "finishes", mxDuplicateArray(value));
+            mxDestroyArray(value);
 
-			value = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
-			for (int i = 0; i < info.size (); i++) 
-				*((int *)mxGetPr (value) + i) = info[i].len ();
-			mxSetField(pa_cur, 0, "durations", mxDuplicateArray (value));
-			mxDestroyArray (value);
+            value = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
+            for (int i = 0; i < info.size(); i++)
+                *((int *)mxGetPr(value) + i) = info[i].len();
+            mxSetField(pa_cur, 0, "durations", mxDuplicateArray(value));
+            mxDestroyArray(value);
 
-			value = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
-			for (int i = 0; i < info.size (); i++) 
-				*((int *)mxGetPr (value) + i) = info[i].max_projection;
-			mxSetField(pa_cur, 0, "max_projections", mxDuplicateArray (value));
-			mxDestroyArray (value);
+            value = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
+            for (int i = 0; i < info.size(); i++)
+                *((int *)mxGetPr(value) + i) = info[i].max_projection;
+            mxSetField(pa_cur, 0, "max_projections", mxDuplicateArray(value));
+            mxDestroyArray(value);
 
-			dims[0] = 1;
-			value = mxCreateNumericArray(1, dims, mxINT32_CLASS, mxREAL);
-			*(int *)mxGetPr (value) = (int)info.size();
-			mxSetField(pa_cur, 0, "numbers", mxDuplicateArray(value));
-			mxDestroyArray (value);
-		}
-		plhs[1] = mxDuplicateArray (pa_cur);
-		mxDestroyArray (pa_cur);
-	}
+            dims[0] = 1;
+            value = mxCreateNumericArray(1, dims, mxINT32_CLASS, mxREAL);
+            *(int *)mxGetPr(value) = (int)info.size();
+            mxSetField(pa_cur, 0, "numbers", mxDuplicateArray(value));
+            mxDestroyArray(value);
+        }
+        plhs[1] = mxDuplicateArray(pa_cur);
+        mxDestroyArray(pa_cur);
+    }
 	delete astro;
 }

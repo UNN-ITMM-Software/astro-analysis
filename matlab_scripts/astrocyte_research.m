@@ -18,6 +18,8 @@ addpath(field_value_struct.MEXPATH, field_value_struct.BM3DPATH);
 disp_conf_parameters(field_value_struct);
 
 % convert algorithm parameters
+left_bound = uint8(str2num(field_value_struct.NORMLEFTBOUND));
+right_bound = uint8(str2num(field_value_struct.NORMRIGHTBOUND));
 thr_df_f0 = int32(str2num(field_value_struct.THRESHOLDDFF));
 a = int32(str2num(field_value_struct.WINDOWSIDE));
 min_points = int32(str2num(field_value_struct.MINPOINTS));
@@ -50,7 +52,9 @@ end
 
 % call 'preprocessing' method for smoothing pixel's intensities by time
 info_log('Start: Smoothing pixels intensities by time.');
-preprocessed_video = preprocessing(bm3d_video);
+preprocessed_video = preprocessing(bm3d_video, ...
+    struct('left_bound', left_bound, ...
+           'right_bound', right_bound));
 info_log('Finish: Smoothing pixels intensities by time.');
 
 % call 'background_subtraction' method to compute dF/F0

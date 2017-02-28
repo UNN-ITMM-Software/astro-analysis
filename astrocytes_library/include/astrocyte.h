@@ -60,11 +60,13 @@ public:
 	// 1. Preprocess frames
 	void normalization(const video_data & source_video,
 		video_data & preprocessed_video, 
-		const uchar lb = 55, const uchar rb = 255);
+		const uchar lb = 0, const uchar rb = 255);
 	void smoothing(video_data & preprocessed_video, 
 		const int l = 1, const int r = 1);
 	void preprocessing(const video_data & source_video, 
-		video_data & preprocessed_video, bool smooth_by_time = true);
+		video_data & preprocessed_video,
+        const uchar lb = 0, const uchar rb = 255,
+        bool smooth_by_time = true);
 	
 	// 2. Compute df/f0 (background/foreground classification)
 	void background_subtraction(const video_data & source_video, 

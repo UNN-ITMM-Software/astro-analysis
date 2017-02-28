@@ -18,6 +18,10 @@
 #define THR_AREA 0.5
 // threshold of overlapping time intervals in the range [0, 1]
 #define THR_TIME 0.5
+// left bound for normalization
+#define LEFT_BOUND 55
+// left bound for normalization
+#define RIGHT_BOUND 255
 // threshold for background/foreground classification
 #define THR_DF_F0 10
 // minimum event area
