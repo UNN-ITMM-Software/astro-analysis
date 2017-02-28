@@ -112,8 +112,6 @@ function bu_run_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-cmap = vertcat(jet(127), 0.3 + rand (128, 3) * 0.69, [1,1,1]); % view_events
-
 all_data = guidata(gcbo);
 selected_item = get(handles.li_variables,'Value');
 disp(selected_item);
@@ -130,7 +128,6 @@ end
 
 clear input_data;
 
-% events_info = calc_events_info(events_3d);
 events_stat = calc_statistics(events_info);
 
 % Create players for 4 video streams
