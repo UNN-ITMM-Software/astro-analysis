@@ -133,32 +133,28 @@ clear input_data;
 % events_info = calc_events_info(events_3d);
 events_stat = calc_statistics(events_info);
 
-% Create players for 3 video streams
+% Create players for 4 video streams
 if isfield(all_data, 'data_player') && ishandle(all_data.data_player) 
     close(all_data.data_player)
 end
-data_2d_video = norm_data(data_2d_video, 127);
-all_data.data_player = implay_map(data_2d_video, 2, [0 255], ...
-    cmap, 'Video (2D format)');
+all_data.data_player = implay_map(data_2d_video, 2, ...
+    'Video (2D format)');
 
 if isfield(all_data, 'preproc_data_player') && ishandle(all_data.preproc_data_player) 
     close(all_data.preproc_data_player)
 end
-preprocessed_video = norm_data(preprocessed_video, 127);
 all_data.preproc_data_player = implay_map(preprocessed_video, 2, ...
-    [0 255], cmap, 'Preprocessed video (bm3d + smoothing)');
+    'Preprocessed video (bm3d + smoothing)');
 
 if isfield(all_data, 'dF_F0_player') && ishandle(all_data.dF_F0_player)
     close(all_data.dF_F0_player)
 end
-df_f0_video = norm_data(df_f0_video, 127);
-all_data.dF_F0_player = implay_map(df_f0_video, 2, [0 255], cmap, 'dF/F0');
+all_data.dF_F0_player = implay_map(df_f0_video, 2, 'dF/F0');
 
 if isfield(all_data, 'bg_model_player') && ishandle(all_data.bg_model_player)
     close(all_data.bg_model_player)
 end
-bg_video = norm_data(bg_video, 127);
-all_data.bg_player = implay_map(bg_video, 2, [0 255], cmap, 'Background model');
+all_data.bg_player = implay_map(bg_video, 2, 'Background model');
 
 
 % Create list of events
