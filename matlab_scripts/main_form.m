@@ -124,9 +124,10 @@ on_bm3d_filtering = false;
 if get(handles.cb_on_bm3d, 'Value')
    on_bm3d_filtering = true; 
 end
-[data_2d_video, bm3d_video, preprocessed_video, df_f0_video, events_3d, events_info] = ...
-    astrocyte_research(input_data.(var_name), on_bm3d_filtering);
-% all_data.data_2d_video = norm_data(input_data.(var_name), 127);
+[data_2d_video, bm3d_video, preprocessed_video, df_f0_video, bg_video, ...
+    events_3d, events_info] = astrocyte_research(input_data.(var_name), ...
+                                                 on_bm3d_filtering);
+
 clear input_data;
 
 % events_info = calc_events_info(events_3d);
@@ -153,6 +154,12 @@ end
 df_f0_video = norm_data(df_f0_video, 127);
 all_data.dF_F0_player = implay_map(df_f0_video, 2, [0 255], cmap, 'dF/F0');
 
+if isfield(all_data, 'bg_model_player') && ishandle(all_data.bg_model_player)
+    close(all_data.bg_model_player)
+end
+bg_video = norm_data(bg_video, 127);
+all_data.bg_player = implay_map(bg_video, 2, [0 255], cmap, 'Background model');
+
 
 % Create list of events
 handle_events_form = events_form();
@@ -173,6 +180,7 @@ all_data.data_2d_video = data_2d_video;
 all_data.bm3d_video = bm3d_video;
 all_data.preprocessed_video = preprocessed_video;
 all_data.df_f0_video = df_f0_video;
+all_data.bg_video = bg_video;
 all_data.events_3d = events_3d;
 all_data.events_info = events_info;
 all_data.events_stat = events_stat;

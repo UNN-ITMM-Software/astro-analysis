@@ -1,5 +1,5 @@
 function [data_2d_video, bm3d_video, preprocessed_video, df_f0_video, ...
-    events_3d, events_info] = astrocyte_research(input_video, on_bm3d_filtering)
+    bg_video, events_3d, events_info] = astrocyte_research(input_video, on_bm3d_filtering)
 
 if (nargin < 2) || isempty(on_bm3d_filtering)
     on_bm3d_filtering = false;
@@ -57,7 +57,7 @@ info_log('Finish: Smoothing pixels intensities by time.');
 info_log('Start: Compute dF/dF0.');
 % Parameters (optional):
 %   thr_df_f0 - threshold of background subtraction method
-df_f0_video = background_subtraction(preprocessed_video, ...
+[df_f0_video, bg_video] = background_subtraction(preprocessed_video, ...
     struct('thr_df_f0', thr_df_f0));
 info_log('Finish: Compute dF/dF0.');
 
