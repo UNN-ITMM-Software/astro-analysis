@@ -1,6 +1,7 @@
 function [handle] = implay_map(frames, fps, window_name)
 
 handle = implay(frames, fps);
+colorbar;
 handle.Visual.ColorMap.UserRangeMin = min(frames(:));
 handle.Visual.ColorMap.UserRangeMax = max(frames(:));
 handle.Visual.ColorMap.UserRange = 1;
