@@ -4,9 +4,9 @@
 #include "vertex.h"
 
 struct component : vertex
-{	
-	int max_projection;
-	bool good{ true };
+{
+    int max_projection;
+    bool good{ true };
 };
 
 #endif

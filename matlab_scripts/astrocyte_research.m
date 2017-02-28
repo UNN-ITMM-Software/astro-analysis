@@ -1,5 +1,5 @@
 function [data_2d_video, bm3d_video, preprocessed_video, df_f0_video, ...
-    events_3d, events_info] = astrocyte_research(input_video, on_bm3d_filtering)
+    bg_video, events_3d, events_info] = astrocyte_research(input_video, on_bm3d_filtering)
 
 if (nargin < 2) || isempty(on_bm3d_filtering)
     on_bm3d_filtering = false;
@@ -18,6 +18,8 @@ addpath(field_value_struct.MEXPATH, field_value_struct.BM3DPATH);
 disp_conf_parameters(field_value_struct);
 
 % convert algorithm parameters
+left_bound = uint8(str2num(field_value_struct.NORMLEFTBOUND));
+right_bound = uint8(str2num(field_value_struct.NORMRIGHTBOUND));
 thr_df_f0 = int32(str2num(field_value_struct.THRESHOLDDFF));
 a = int32(str2num(field_value_struct.WINDOWSIDE));
 min_points = int32(str2num(field_value_struct.MINPOINTS));
@@ -50,14 +52,16 @@ end
 
 % call 'preprocessing' method for smoothing pixel's intensities by time
 info_log('Start: Smoothing pixels intensities by time.');
-preprocessed_video = preprocessing(bm3d_video);
+preprocessed_video = preprocessing(bm3d_video, ...
+    struct('left_bound', left_bound, ...
+           'right_bound', right_bound));
 info_log('Finish: Smoothing pixels intensities by time.');
 
 % call 'background_subtraction' method to compute dF/F0
 info_log('Start: Compute dF/dF0.');
 % Parameters (optional):
 %   thr_df_f0 - threshold of background subtraction method
-df_f0_video = background_subtraction(preprocessed_video, ...
+[df_f0_video, bg_video] = background_subtraction(preprocessed_video, ...
     struct('thr_df_f0', thr_df_f0));
 info_log('Finish: Compute dF/dF0.');
 

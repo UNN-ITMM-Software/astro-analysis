@@ -92,7 +92,7 @@ if isequal(filename,0)
    disp('User selected Cancel')
 else
    disp(['User selected ', fullfile(pathname, filename)])
-   all_data.file_name = sprintf('%s%s',pathname,filename);
+   all_data.file_name = fullfile(pathname, filename);
    all_data.variables_info = whos('-file',all_data.file_name);
    all_data.variables_name = extractfield(all_data.variables_info, 'name');   
    set(handles.li_variables,'String',all_data.variables_name);
@@ -112,8 +112,6 @@ function bu_run_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-cmap = vertcat(jet(127), 0.3 + rand (128, 3) * 0.69, [1,1,1]); % view_events
-
 all_data = guidata(gcbo);
 selected_item = get(handles.li_variables,'Value');
 disp(selected_item);
@@ -124,34 +122,36 @@ on_bm3d_filtering = false;
 if get(handles.cb_on_bm3d, 'Value')
    on_bm3d_filtering = true; 
 end
-[data_2d_video, bm3d_video, preprocessed_video, df_f0_video, events_3d, events_info] = ...
-    astrocyte_research(input_data.(var_name), on_bm3d_filtering);
-% all_data.data_2d_video = norm_data(input_data.(var_name), 127);
+[data_2d_video, bm3d_video, preprocessed_video, df_f0_video, bg_video, ...
+    events_3d, events_info] = astrocyte_research(input_data.(var_name), ...
+                                                 on_bm3d_filtering);
+
 clear input_data;
 
-% events_info = calc_events_info(events_3d);
 events_stat = calc_statistics(events_info);
 
-% Create players for 3 video streams
+% Create players for 4 video streams
 if isfield(all_data, 'data_player') && ishandle(all_data.data_player) 
     close(all_data.data_player)
 end
-data_2d_video = norm_data(data_2d_video, 127);
-all_data.data_player = implay_map(data_2d_video, 2, [0 255], ...
-    cmap, 'Video (2D format)');
+all_data.data_player = implay_map(data_2d_video, 2, ...
+    'Video (2D format)');
 
 if isfield(all_data, 'preproc_data_player') && ishandle(all_data.preproc_data_player) 
     close(all_data.preproc_data_player)
 end
-preprocessed_video = norm_data(preprocessed_video, 127);
 all_data.preproc_data_player = implay_map(preprocessed_video, 2, ...
-    [0 255], cmap, 'Preprocessed video (bm3d + smoothing)');
+    'Preprocessed video (bm3d + smoothing)');
 
 if isfield(all_data, 'dF_F0_player') && ishandle(all_data.dF_F0_player)
     close(all_data.dF_F0_player)
 end
-df_f0_video = norm_data(df_f0_video, 127);
-all_data.dF_F0_player = implay_map(df_f0_video, 2, [0 255], cmap, 'dF/F0');
+all_data.dF_F0_player = implay_map(df_f0_video, 2, 'dF/F0');
+
+if isfield(all_data, 'bg_model_player') && ishandle(all_data.bg_model_player)
+    close(all_data.bg_model_player)
+end
+all_data.bg_player = implay_map(bg_video, 2, 'Background model');
 
 
 % Create list of events
@@ -173,6 +173,7 @@ all_data.data_2d_video = data_2d_video;
 all_data.bm3d_video = bm3d_video;
 all_data.preprocessed_video = preprocessed_video;
 all_data.df_f0_video = df_f0_video;
+all_data.bg_video = bg_video;
 all_data.events_3d = events_3d;
 all_data.events_info = events_info;
 all_data.events_stat = events_stat;
@@ -238,7 +239,7 @@ if isequal(filename,0)
    disp('User selected Cancel')
 else
    disp(['User selected ', fullfile(pathname, filename)])
-   file_name = sprintf('%s%s', pathname, filename);
+   file_name = fullfile(pathname, filename);
    log_strings = get(handles.li_log, 'String');
    info_log(sprintf('Saving logs to %s', file_name));
    save_log(log_strings, file_name);
@@ -292,7 +293,7 @@ if isequal(filename,0)
    disp('User selected Cancel');
 else
    disp(['User selected ', fullfile(pathname, filename)]);
-   file_name = sprintf('%s%s', pathname, filename); 
+   file_name = fullfile(pathname, filename); 
    info_log(sprintf('Saving steps to %s', file_name));
    save_results2video(all_data.data_2d_video, all_data.data_2d_video, ...
        all_data.bm3d_video, all_data.preprocessed_video, ...
