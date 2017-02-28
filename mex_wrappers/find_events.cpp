@@ -20,8 +20,8 @@ void mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     {
         mexErrMsgIdAndTxt("MyToolbox:find_events:help", help.c_str());
     }
-	
-	std::string var_name = "";
+    
+    std::string var_name = "";
     if (nrhs > 1 && mxIsChar(prhs[1]))
     {
         var_name = (char *)mxGetPr(prhs[1]);
@@ -55,9 +55,9 @@ void mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
             buff, ms % 1000, dif, duration, message.c_str());
         mexEvalString("drawnow;");
     };
-	
-	astrocyte * astro = nullptr;
-	segmentation_settings segm;
+    
+    astrocyte * astro = nullptr;
+    segmentation_settings segm;
     if (mxIsStruct(prhs[nrhs - 1]))
     {
         const mxArray * param = prhs[nrhs - 1];
@@ -96,14 +96,14 @@ void mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
             }
         }
     }
-	
-	
-	if (mxIsNumeric (prhs[0])) 
-	{
-		astro = new astrocyte (log_update);
-		video_data df_f0_video;
-		const mxArray * input_video = prhs[0];
-		int img_type;
+    
+    
+    if (mxIsNumeric (prhs[0])) 
+    {
+        astro = new astrocyte (log_update);
+        video_data df_f0_video;
+        const mxArray * input_video = prhs[0];
+        int img_type;
         if (mxIsUint8(input_video))
         {
             img_type = CV_8UC1;
@@ -112,69 +112,69 @@ void mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
         {
             mexErrMsgIdAndTxt("MyToolbox:find_events:help", help.c_str());
         }
-		int num = (int)mxGetNumberOfDimensions (input_video);
-		const mwSize *sz = mxGetDimensions (input_video);
-		if (num == 3)
-		{
-			df_f0_video.reset((uchar *)mxGetData(input_video),
-				(int)sz[1], (int)sz[0], (int)sz[2], img_type, false);
-		}
-		else
-		{
-			mexErrMsgIdAndTxt("MyToolbox:find_events:help", help.c_str());
-		}
-		mexEvalString("drawnow;");
-		astro->settings(segm);
-		mexPrintf("settings: a = %d min_points = %d eps = %d thr_area = %lf thr_time = %lf min_area = %d min_duration = %d\n", 
-			segm.a, segm.min_points, segm.eps, segm.thr_area, segm.thr_time,
-			segm.min_area, segm.min_duration);
-		astro->build_events(df_f0_video);
-	}
+        int num = (int)mxGetNumberOfDimensions (input_video);
+        const mwSize *sz = mxGetDimensions (input_video);
+        if (num == 3)
+        {
+            df_f0_video.reset((uchar *)mxGetData(input_video),
+                (int)sz[1], (int)sz[0], (int)sz[2], img_type, false);
+        }
+        else
+        {
+            mexErrMsgIdAndTxt("MyToolbox:find_events:help", help.c_str());
+        }
+        mexEvalString("drawnow;");
+        astro->settings(segm);
+        mexPrintf("settings: a = %d min_points = %d eps = %d thr_area = %lf thr_time = %lf min_area = %d min_duration = %d\n", 
+            segm.a, segm.min_points, segm.eps, segm.thr_area, segm.thr_time,
+            segm.min_area, segm.min_duration);
+        astro->build_events(df_f0_video);
+    }
 
-	if (nlhs > 0)
-	{	
-		astro->get_3d_events();
-		astro->get_events_info();
-		astro->filter_events();
-		auto & events_3d = astro->selected_events_3d;
-		mexPrintf("Number of events: %d\n", events_3d.size());
-		// Return events
-		// Cell array where each cell is event
-		// Each event is numeric array with 3 numbers per row - pixel coordinates of events
-		const char * field_names_event_3d[] = { "ids", "points" };
-		const char * field_names[] = { "x", "y", "t" };
-		size_t dims[1] = { events_3d.size() };
-		mxArray * events_3d_strarr = mxCreateStructArray(1, dims, 2, field_names_event_3d);
-		{
-			size_t dims[2] = { events_3d.size(), 1 };
-			mxArray * value = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
-			mxArray * pa = mxCreateCellArray(1, dims);
-			int k = 0;
-			for (auto e : events_3d)
-			{
-				*((int *)mxGetPr(value) + k) = e.first;
+    if (nlhs > 0)
+    {    
+        astro->get_3d_events();
+        astro->get_events_info();
+        astro->filter_events();
+        auto & events_3d = astro->selected_events_3d;
+        mexPrintf("Number of events: %d\n", events_3d.size());
+        // Return events
+        // Cell array where each cell is event
+        // Each event is numeric array with 3 numbers per row - pixel coordinates of events
+        const char * field_names_event_3d[] = { "ids", "points" };
+        const char * field_names[] = { "x", "y", "t" };
+        size_t dims[1] = { events_3d.size() };
+        mxArray * events_3d_strarr = mxCreateStructArray(1, dims, 2, field_names_event_3d);
+        {
+            size_t dims[2] = { events_3d.size(), 1 };
+            mxArray * value = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
+            mxArray * pa = mxCreateCellArray(1, dims);
+            int k = 0;
+            for (auto e : events_3d)
+            {
+                *((int *)mxGetPr(value) + k) = e.first;
 
-				int n = (int)e.second.size();
-				size_t dims[2] = { n, 3 };
-				mxArray * pa_cur = mxCreateNumericArray(2, dims, mxUINT16_CLASS, mxREAL);
-				for (int i = 0; i < n; i++)
-				{
-					*((ushort *)mxGetPr(pa_cur) + i) = e.second[i].x;
-					*((ushort *)mxGetPr(pa_cur) + i + n) = e.second[i].y;
-					*((ushort *)mxGetPr(pa_cur) + i + n + n) = e.second[i].t;
-				}
-				mxSetCell(pa, k++, mxDuplicateArray(pa_cur));
-				mxDestroyArray(pa_cur);
-			}
-			mxSetField(events_3d_strarr, 0, "ids", mxDuplicateArray(value));
-			mxDestroyArray(value);
+                int n = (int)e.second.size();
+                size_t dims[2] = { n, 3 };
+                mxArray * pa_cur = mxCreateNumericArray(2, dims, mxUINT16_CLASS, mxREAL);
+                for (int i = 0; i < n; i++)
+                {
+                    *((ushort *)mxGetPr(pa_cur) + i) = e.second[i].x;
+                    *((ushort *)mxGetPr(pa_cur) + i + n) = e.second[i].y;
+                    *((ushort *)mxGetPr(pa_cur) + i + n + n) = e.second[i].t;
+                }
+                mxSetCell(pa, k++, mxDuplicateArray(pa_cur));
+                mxDestroyArray(pa_cur);
+            }
+            mxSetField(events_3d_strarr, 0, "ids", mxDuplicateArray(value));
+            mxDestroyArray(value);
 
-			mxSetField(events_3d_strarr, 0, "points", mxDuplicateArray(pa));
-			mxDestroyArray(pa);
-		}
-		plhs[0] = mxDuplicateArray(events_3d_strarr);
-		mxDestroyArray(events_3d_strarr);
-	}
+            mxSetField(events_3d_strarr, 0, "points", mxDuplicateArray(pa));
+            mxDestroyArray(pa);
+        }
+        plhs[0] = mxDuplicateArray(events_3d_strarr);
+        mxDestroyArray(events_3d_strarr);
+    }
     if (nlhs > 1)
     {
         auto info = astro->selected_components;
@@ -226,5 +226,5 @@ void mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
         plhs[1] = mxDuplicateArray(pa_cur);
         mxDestroyArray(pa_cur);
     }
-	delete astro;
+    delete astro;
 }
