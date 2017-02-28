@@ -92,7 +92,7 @@ if isequal(filename,0)
    disp('User selected Cancel')
 else
    disp(['User selected ', fullfile(pathname, filename)])
-   all_data.file_name = sprintf('%s%s',pathname,filename);
+   all_data.file_name = fullfile(pathname, filename);
    all_data.variables_info = whos('-file',all_data.file_name);
    all_data.variables_name = extractfield(all_data.variables_info, 'name');   
    set(handles.li_variables,'String',all_data.variables_name);
@@ -238,7 +238,7 @@ if isequal(filename,0)
    disp('User selected Cancel')
 else
    disp(['User selected ', fullfile(pathname, filename)])
-   file_name = sprintf('%s%s', pathname, filename);
+   file_name = fullfile(pathname, filename);
    log_strings = get(handles.li_log, 'String');
    info_log(sprintf('Saving logs to %s', file_name));
    save_log(log_strings, file_name);
@@ -292,7 +292,7 @@ if isequal(filename,0)
    disp('User selected Cancel');
 else
    disp(['User selected ', fullfile(pathname, filename)]);
-   file_name = sprintf('%s%s', pathname, filename); 
+   file_name = fullfile(pathname, filename); 
    info_log(sprintf('Saving steps to %s', file_name));
    save_results2video(all_data.data_2d_video, all_data.data_2d_video, ...
        all_data.bm3d_video, all_data.preprocessed_video, ...

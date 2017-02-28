@@ -48,10 +48,12 @@ end
 
 function [ccdf] = calc_ccdf (data)
     n = numel (data);
+    info_log(sprintf ('calc_ccdf n = %d', n));
     mn = min (data);
     % mx = max (data);
     tab = tabulate (data);
     cnt = tab(:,2);
+    info_log(sprintf ('calc_ccdf cnt = %d', numel (cnt)));
     cnt(1) = n - cnt(1);
     ccdf = [];
     for i = 2:numel(cnt)
@@ -66,6 +68,7 @@ function [ccdf] = calc_ccdf (data)
             ccdf(end+1,:) = [i; cnt(i) / n];
         end
     end
+    info_log(sprintf ('calc_ccdf ccdf = %d', numel (ccdf)));
 end
 
 function [stat] = calc_powerlaw (data)
