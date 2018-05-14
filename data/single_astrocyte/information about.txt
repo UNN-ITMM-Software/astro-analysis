@@ -1,0 +1,2 @@
+size: 65 uM / 65 uM
+frequency: 1hz
