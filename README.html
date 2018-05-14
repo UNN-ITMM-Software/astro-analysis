@@ -1,86 +1,185 @@
-<h1 id="software-for-astrocyte-analysis">CalciumCV: Computer vision software for calcium signaling in astrocytes</h1>
-<h2 id="introduction">Introduction</h2>
-<p>Implementation of new method for astrocyte analysis. Method is based on &quot;sliding&quot; window approach and consists of the following stages:</p>
-<ol>
-<li><strong>Preprocessing</strong> involves <a href="http://www.cs.tut.fi/~foi/GCF-BM3D">BM3D</a> filtering and smoothing along the time axis.</li>
-<li><strong>Background subtraction</strong> is based on <a href="http://docs.opencv.org/2.4.12/modules/video/doc/motion_analysis_and_object_tracking.html#backgroundsubtractormog2">Gaussian mixture-based background/foreground segmentation algorithm</a> implemented in <a href="http://opencv.org">OpenCV</a> library.</li>
-<li><strong>Events construction</strong> based on &quot;sliding&quot; window approach. &quot;Sliding&quot; window method allows to find spatiotemporal fragments that represent parts of events. Next events graph is constructed for the set of fragments. Graph connectivity components represent events and allows to extract full information about events.</li>
-</ol>
-<h2 id="project-structure">Project structure</h2>
-<p>Project consists of the following directories:</p>
-<ol>
-<li><code>3rd_party</code> - third-party libraries used in the project:
-<ul><br />
-<li><code>dbscan</code> - DBScan implementation.</li>
-<li><code>gtest</code> - Google Testing Framework.</li>
-<li><code>bm3d</code> - BM3D implementation (follow steps in <code>3rd_party/bm3d/README</code> to get implementation).</li>
-<br /></ul></li>
-<li><code>astrocytes_library</code> - C++ library for astrocyte analysis.</li>
-<li><code>auxiliary_scripts</code> - auxiliary_scripts to analyze temporary data.</li>
-<li><code>matlab_scripts</code> - matlab-scripts for researchers.</li>
-<li><code>data</code> - directory with short test sample (<code>*z-max*.mat</code> - maximal projection), three-dimensional matrix <code>width*height*k</code>, where <code>width</code> is a frame width, <code>height</code> is a frame height, <code>k</code> is a number of frames.</li>
-<li><code>mex_wrappers</code> - mex-functions (wrappers) for the library of astrocyte analysis.</li>
-<li><code>tests</code> - automatic tests to check correctness of the algorithm.</li>
-</ol>
-<h2 id="prerequisites">Prerequisites</h2>
-<p>Software for astrocyte analysis has several dependencies:</p>
-<ol>
-<li>MATLAB is required to read/write mat-files (version &gt;= R2010a).</li>
-<li>Boost (version &gt;= 1.60), <a href="https://sourceforge.net/projects/boost/files/boost-binaries">binaries for Windows</a>.</li>
-<li><a href="http://opencv.org">OpenCV</a> (version 2.4.*).</li>
-<li><a href="http://www.cs.tut.fi/~foi/GCF-BM3D/BM3D.zip">BM3D</a> is required for filtering frames (follow steps described in <code>3rd_party/bm3d/README</code>).</li>
-</ol>
-<p>Environment:</p>
-<ol>
-<li>Windows
-<ul>
-<li><a href="https://cmake.org/download">CMake</a> (version &gt;=3.1.0).</li>
-<li>C++ Compiler (for example, Visual C++ Compiler from Microsoft Visual Studio 2013, 2015 is preferable).</li>
-</ul></li>
-<li>Linux
-<ul>
-<li><a href="https://cmake.org/download">CMake</a> (version &gt;=3.1.0).</li>
-<li>C++ Compiler (for example, GCC &gt;= 4.7).</li>
-</ul></li>
-</ol>
-<h2 id="how-to-build">How to build</h2>
-<h3 id="windows-visual-c-compiler">Windows (Visual C++ Compiler)</h3>
-<ol>
-<li>Install prerequisites.</li>
-<li>Download <a href="https://github.com/UNN-VMK-Software/astro-analysis">source code</a>.</li>
-<li>Open Command Prompt Window (use <a href="http://windows.microsoft.com/en-us/windows-vista/open-a-command-prompt-window">this</a> manual).</li>
-<li>Create build directory <code>astro-analysis-build</code> next to the directory <code>astro-analysis</code> using the following command:
-<code><p>mkdir astro-analysis-build</p></code>
-</li>
-<li>Set <code>astro-analysis-build</code> as current directory using the following command:</li>
-<p><code>cd astro-analysis-build</code></p>
-<li>Generate Visual Studio solution to compile sources using the following command. Note: if Boost library installed from binaries you must set <code>BOOST_ROOT</code>, <code>Boost_INCLUDE_DIRS</code> and <code>Boost_LIBRARY_DIR</code>.</li>
-<p><code>cmake -G &lt;Generator-name&gt;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;-DOpenCV_DIR=&lt;OpenCVConfig.cmake-directory&gt;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;[-DBOOST_ROOT=&lt;Boost-library-directory&gt;]<br />
-&nbsp;&nbsp;&nbsp;&nbsp;[-DBoost_INCLUDE_DIRS=&lt;dir-with-boost-header-files&gt;]<br />
-&nbsp;&nbsp;&nbsp;&nbsp;[-DBoost_LIBRARY_DIR=&lt;dir-with-boost-lib-files&gt;]<br />
-&nbsp;&nbsp;&nbsp;&nbsp;[-DMATLAB_ROOT=&lt;matlab-dir&gt;]<br />
-&nbsp;&nbsp;&nbsp;&nbsp;-DMatlab_MX_LIBRARY=&quot;&lt;dir-with-libmx&gt;\libmx.lib&quot;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;-DMatlab_ENG_LIBRARY=&quot;&lt;dir-with-libeng&gt;\libeng.lib&quot;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;..\astro-analysis</code></p>
-<p>Example: <br />
-<code><br />cmake -G &quot;Visual Studio 14 2015 Win64&quot;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;-DOpenCV_DIR=&quot;c:\Program Files\opencv2411\vs2015&quot;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;-DBOOST_ROOT=&quot;c:\boost_1_60_0&quot;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;-DBoost_INCLUDE_DIRS=&quot;c:\boost_1_60_0\boost&quot;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;-DBoost_LIBRARY_DIR=&quot;c:\boost_1_60_0\lib64-msvc-14.0&quot;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;-DMATLAB_ROOT=&quot;c:\Program Files\MATLAB\R2010a&quot;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;-DMatlab_MX_LIBRARY=&quot;c:\Program Files\MATLAB\R2010a\extern\lib\win64\microsoft\libmx.lib&quot;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;-DMatlab_ENG_LIBRARY=&quot;c:\Program Files\MATLAB\R2010a\extern\lib\win64\microsoft\libeng.lib&quot;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;..\astro-analysis</code></p>
-<li>Choose Release and x64 modes in main menu of Visual Studio.</li>
-<li>Choose project <code>ALL_BUILD</code> and execute command <code>Rebuild</code> in the menu that you get after right mouse click.
-You will see static libraries <code>astrocytes_analysis.lib</code>, <code>dbscan.lib</code>, 3 mex-wrappers 
-(<code>preprocessing.mexw64</code>, <code>background_subtraction.mexw64</code>, <code>find_events.mexw64</code>),
+<!DOCTYPE html []>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="author" content="MarkdownViewer++" />
+    <title>README.md</title>
+    <style type="text/css">
+            
+/* Avoid page breaks inside the most common attributes, especially for exports (i.e. PDF) */
+td, h1, h2, h3, h4, h5, p, ul, ol, li {
+    page-break-inside: avoid; 
+}
+
+        </style>
+  </head>
+  <body>
+    <h1 id="software-for-astrocyte-analysis">Software for astrocyte analysis</h1>
+    <h2 id="introduction">Introduction</h2>
+    <p>Implementation of new method for astrocyte analysis. Method is based
+on "sliding" window approach and consists of the following stages:</p>
+    <ol>
+      <li>
+        <p>
+          <strong>Video preprocessing</strong>:</p>
+        <ul>
+          <li>Aligning an image (eliminating jitter).</li>
+          <li>Calculating noise parameters and subtracting the camera noise.</li>
+          <li>Filtering video frames <a href="http://www.cs.tut.fi/%7Efoi/GCF-BM3D">BM3D</a>.</li>
+          <li>Evaluating a noise level on the filtered video.</li>
+        </ul>
+      </li>
+      <li>
+        <p>
+          <strong>Calculating a baseline</strong> of the fluorescence intensity and its relative variation based on the noise information.</p>
+      </li>
+      <li>
+        <p>
+          <strong>Detecting calcium events</strong> based on the relative intensity variation.</p>
+      </li>
+    </ol>
+    <h2 id="project-structure">Project structure</h2>
+    <p>Project consists of the following directories:</p>
+    <ol>
+      <li>
+        <p>
+          <code>3rd_party</code> - third-party libraries used in the project:</p>
+        <ul>
+          <li>
+            <code>dbscan</code> - DBScan implementation (no needed now, because faster implementation is used).</li>
+          <li>
+            <code>gtest</code> - Google Testing Framework.</li>
+          <li>
+            <code>bm3d</code> - BM3D implementation (follow steps in <code>3rd_party/bm3d/README</code> to get implementation).</li>
+          <li>
+            <code>DataHash</code> - data hashing for internal use.</li>
+          <li>
+            <code>plot_mk</code> - library for prettifying MATLAB plot.</li>
+          <li>
+            <code>progress_bar</code> - GUI progress bar library.</li>
+          <li>
+            <code>tabplot</code> - GUI tabs library.</li>
+        </ul>
+      </li>
+      <li>
+        <p>
+          <code>astrocytes_library</code> - C++ library for astrocyte analysis.</p>
+      </li>
+      <li>
+        <p>
+          <code>auxiliary_scripts</code> - auxiliary scripts to analyze temporary data.</p>
+      </li>
+      <li>
+        <p>
+          <code>matlab_scripts</code> - matlab-scripts for researchers.</p>
+      </li>
+      <li>
+        <p>
+          <code>data</code> - directory with short test sample (<code>*z-max*.mat</code> - maximal projection),
+three-dimensional matrix <code>width*height*k</code>, where <code>width</code> is a frame width, <code>height</code>
+is a frame height, <code>k</code> is a number of frames.</p>
+      </li>
+      <li>
+        <p>
+          <code>mex_wrappers</code> - mex-functions (wrappers) for the library
+of astrocyte analysis.</p>
+      </li>
+      <li>
+        <p>
+          <code>tests</code> - automatic tests to check correctness of the algorithm.</p>
+      </li>
+    </ol>
+    <h2 id="prerequisites">Prerequisites</h2>
+    <p>Software for astrocyte analysis has several dependencies:</p>
+    <ol>
+      <li>MATLAB is required to read/write mat-files (version &gt;= R2016a).</li>
+      <li>Boost (version &gt;= 1.60),
+<a href="https://sourceforge.net/projects/boost/files/boost-binaries">binaries for Windows</a>.</li>
+      <li>
+        <a href="http://opencv.org">OpenCV</a> (version 2.4.*).</li>
+      <li>
+        <a href="http://www.cs.tut.fi/%7Efoi/GCF-BM3D/BM3D.zip">BM3D</a> is required for filtering frames (follow steps described
+in <code>3rd_party/bm3d/README</code>).</li>
+    </ol>
+    <p>Environment:</p>
+    <ol>
+      <li>Windows
+<ul><li><a href="https://cmake.org/download">CMake</a> (version &gt;=3.1.0).</li><li>C++ Compiler (for example, Visual C++ Compiler from Microsoft Visual Studio 2013,
+2015 is preferable).</li></ul></li>
+      <li>Linux
+<ul><li><a href="https://cmake.org/download">CMake</a> (version &gt;=3.1.0).</li><li>C++ Compiler (for example, GCC &gt;= 4.7).</li></ul></li>
+    </ol>
+    <h2 id="how-to-build">How to build</h2>
+    <h3 id="windows-visual-c-compiler">Windows (Visual C++ Compiler)</h3>
+    <ol>
+      <li>
+        <p>Install prerequisites.</p>
+      </li>
+      <li>
+        <p>Download <a href="https://github.com/UNN-VMK-Software/astro-events-analysis">source code</a>.</p>
+      </li>
+      <li>
+        <p>Open Command Prompt Window (use <a href="http://windows.microsoft.com/en-us/windows-vista/open-a-command-prompt-window">this</a> manual).</p>
+      </li>
+      <li>
+        <p>Create build directory <code>astro-events-analysis-build</code> next
+to the directory <code>astro-events-analysis</code> using the following
+command:</p>
+        <pre>
+          <code class="language-bash">mkdir astro-events-analysis-build
+</code>
+        </pre>
+      </li>
+      <li>
+        <p>Set <code>astro-events-analysis-build</code> as current directory using the following
+command:</p>
+        <pre>
+          <code class="language-bash">cd astro-events-analysis-build
+</code>
+        </pre>
+      </li>
+      <li>
+        <p>Generate Visual Studio solution to compile sources using the following
+command. Note: if Boost library installed from binaries you must
+set <code>BOOST_ROOT</code>, <code>Boost_INCLUDE_DIRS</code> and <code>Boost_LIBRARY_DIR</code>.</p>
+        <pre>
+          <code class="language-bash">cmake -G &lt;Generator-name&gt;
+      -DOpenCV_DIR=&lt;OpenCVConfig.cmake-directory&gt;
+      [-DBOOST_ROOT=&lt;Boost-library-directory&gt;]
+      [-DBoost_INCLUDE_DIRS=&lt;dir-with-boost-header-files&gt;]
+      [-DBoost_LIBRARY_DIR=&lt;dir-with-boost-lib-files&gt;]
+      [-DMATLAB_ROOT=&lt;matlab-dir&gt;]
+      -DMatlab_MX_LIBRARY="&lt;dir-with-libmx&gt;\libmx.lib"
+      -DMatlab_ENG_LIBRARY="&lt;dir-with-libeng&gt;\libeng.lib"
+      ..\astro-events-analysis
+</code>
+        </pre>
+        <p>Example:</p>
+        <pre>
+          <code class="language-bash">cmake -G "Visual Studio 14 2015 Win64" -DOpenCV_DIR="c:\Program Files\opencv2411\vs2015" 
+    -DBOOST_ROOT="c:\boost_1_60_0" 
+    -DBoost_INCLUDE_DIRS="c:\boost_1_60_0\boost" 
+    -DBoost_LIBRARY_DIR="c:\boost_1_60_0\lib64-msvc-14.0" 
+    -DMATLAB_ROOT="c:\Program Files\MATLAB\R2010a"
+    -DMatlab_MX_LIBRARY="c:\Program Files\MATLAB\R2010a\extern\lib\win64\microsoft\libmx.lib" 
+    -DMatlab_ENG_LIBRARY="c:\Program Files\MATLAB\R2010a\extern\lib\win64\microsoft\libeng.lib" 
+    ..\astro-events-analysis
+</code>
+        </pre>
+      </li>
+      <li>
+        <p>Choose Release and x64 modes in main menu of Visual Studio.</p>
+      </li>
+      <li>
+        <p>Choose project <code>ALL_BUILD</code> and execute command <code>Rebuild</code> in the menu that you get
+after right mouse click. You will see static libraries <code>astrocytes_analysis.lib</code>,<code>dbscan.lib</code>,
+3 mex-wrappers (<code>preprocessing.mexw64</code>, <code>background_subtraction.mexw64</code>, <code>find_events.mexw64</code>),
 and binary file <code>test_astrocytes_analysis.exe</code> (contains some automatic tests for developers)
-in the directory <code>astro-analysis-build\bin</code>.</li>
-</ol>
-<h2 id="how-to-run">How to run</h2>
-<p>Detailed user's guide located in <code>matlab_scripts/README</code>.</p>
-<!-- LINKS -->
+in the directory <code>astro-events-analysis-build\bin</code>.</p>
+      </li>
+    </ol>
+    <h2 id="how-to-run">How to run</h2>
+    <p>Detailed user's guide located in <code>matlab_scripts/README</code>.</p>
+    <!-- LINKS -->
+  </body>
+</html>

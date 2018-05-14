@@ -12,7 +12,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     {
         mexErrMsgIdAndTxt("MyToolbox:find_events:help", help.c_str());
     }
-    
+
     std::string var_name = "";
     auto log_update = [](const logger & lg)
     {
@@ -21,8 +21,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
         const auto & last = lg.get_history().back();
         using namespace std::chrono;
         char buff[100];
-        
-        milliseconds ms = 
+
+        milliseconds ms =
             duration_cast<milliseconds>(last.log_time), dif(0), duration(0);
         if (lg.get_history().size() > 1)
         {
@@ -35,20 +35,20 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
                 lg.get_history().begin()->log_time);
         }
         std::string message = std::wstring_convert<std::codecvt_utf8<wchar_t>>().
-            to_bytes (last.message);
+            to_bytes(last.message);
         time_t sec = duration_cast<seconds>(last.log_time).count();
         tm * t = localtime(&sec);
-        strftime (buff, 100, "%Y-%m-%d %H:%M:%S", t);
-        mexPrintf ("%s.%03d | elapsed %7I64d ms | elapsed from start %7I64d ms | %s\n", 
-            buff, ms % 1000, dif, duration, message.c_str ());
-        mexEvalString ("drawnow;");
+        strftime(buff, 100, "%Y-%m-%d %H:%M:%S", t);
+        mexPrintf("%s.%03d | elapsed %7I64d ms | elapsed from start %7I64d ms | %s\n",
+            buff, ms % 1000, dif, duration, message.c_str());
+        mexEvalString("drawnow;");
     };
     astrocyte * astro = nullptr;
-    video_data source_video, preprocessed_video;    
-    mexEvalString ("drawnow;");
-    if (mxIsNumeric(prhs[0])) 
-    {        
-        mexEvalString ("drawnow;");
+    video_data source_video, preprocessed_video;
+    mexEvalString("drawnow;");
+    if (mxIsNumeric(prhs[0]))
+    {
+        mexEvalString("drawnow;");
         astro = new astrocyte(log_update);
         const mxArray * input_video = prhs[0];
         int img_type;
@@ -110,14 +110,14 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
         astro->preprocessing(source_video, preprocessed_video,
             left_bound, right_bound);
     }
-    
+
     if (nlhs > 0)
     {
         size_t dims[3] = { preprocessed_video.m, preprocessed_video.n,
             preprocessed_video.nt };
-        mxArray * pa = mxCreateNumericArray(3, dims, mxUINT8_CLASS, mxREAL);
+        mxArray * pa = mxCreateNumericArray(3, dims, mxSINGLE_CLASS, mxREAL);
         memcpy(mxGetPr(pa), preprocessed_video.get_data(),
-            preprocessed_video.size);
+            preprocessed_video.size * preprocessed_video.type_size);
         plhs[0] = mxDuplicateArray(pa);
         mxDestroyArray(pa);
     }

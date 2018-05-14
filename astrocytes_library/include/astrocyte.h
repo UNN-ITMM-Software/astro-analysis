@@ -53,25 +53,37 @@ public:
     vector<component> components, selected_components;
 
     astrocyte(function <void (const logger & lg)> log_update = {});
-    void settings(segmentation_settings sett) { segm = sett; };
+    void settings(segmentation_settings sett) { 
+		segm = sett;
+		wostringstream settings_message;
+		settings_message << "Settings: ";
+		settings_message << "a = " << segm.a << " ";
+		settings_message << "min_points = " << segm.min_points << " ";
+		settings_message << "eps = " << segm.eps << " ";
+		settings_message << "thr_area = " << segm.thr_area << " ";
+		settings_message << "thr_time = " << segm.thr_time << " ";
+		settings_message << "min_area = " << segm.min_area << " ";
+		settings_message << "min_duration = " << segm.min_duration,
+		astro_log.set_info(settings_message.str());
+	};
     ~astrocyte();
 
 public:
     // 1. Preprocess frames
     void normalization(const video_data & source_video,
         video_data & preprocessed_video, 
-        const uchar lb = 0, const uchar rb = 255);
+        const uchar lb = LEFT_BOUND, const uchar rb = RIGHT_BOUND);
     void smoothing(video_data & preprocessed_video, 
         const int l = 1, const int r = 1);
     void preprocessing(const video_data & source_video, 
         video_data & preprocessed_video,
-        const uchar lb = 0, const uchar rb = 255,
+        const uchar lb = LEFT_BOUND, const uchar rb = RIGHT_BOUND,
         bool smooth_by_time = true);
     
     // 2. Compute df/f0 (background/foreground classification)
     void background_subtraction(const video_data & source_video, 
         video_data & df_f0_video, video_data & background_video, 
-        int thr_df_f0 = THR_DF_F0);
+        video_data & fg_masks, int thr_df_f0 = THR_DF_F0);
 
     // 3. Construct events
     // 3.1. Construct graph + search connectivity components

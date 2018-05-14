@@ -5,9 +5,9 @@
 
 struct vertex 
 {
-    int key;
-    ushort start, finish;
-    inline ushort len() const { return finish - start + 1; };
+	int key;
+	ushort start, finish;
+	inline ushort len() const { return finish - start + 1; };
 };
 
 #endif
