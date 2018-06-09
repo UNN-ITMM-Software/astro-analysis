@@ -2,8 +2,8 @@
 
 ## Introduction
 
-Implementation of new method for astrocyte analysis. Method is based
-on "sliding" window approach and consists of the following stages:
+Implementation of a new method for astrocyte analysis. Method is based
+on "sliding" window approach and include the following stages:
 
   1. **Video preprocessing**:
      - Aligning an image (eliminating jitter).
@@ -18,9 +18,9 @@ on "sliding" window approach and consists of the following stages:
 
 Project consists of the following directories:
 
-  1. `3rd_party` - third-party libraries used in the project:
+  1. `3rd_party` - third-party libraries is used in the project:
      
-     - `dbscan` - DBScan implementation (no needed now, because faster implementation is used).
+     - `dbscan` - DBScan implementation (not needed now, because faster implementation is used).
      - `gtest` - Google Testing Framework.
      - `bm3d` - BM3D implementation (follow steps in `3rd_party/bm3d/README` to get implementation).
      - `DataHash` - data hashing for internal use.

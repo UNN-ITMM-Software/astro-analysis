@@ -5,7 +5,7 @@ This directory contains matlab-scripts:
   1. `core` - GUI, solutions and projects core, calculuses core.
   1. `calc` - algorithm implementation, functions for computing event parameters and generating final videos.
   1. `plot` - functions for data visualization.
-  1. `save` - functions for exporting data to different formats.
+  1. `save` - functions for export data to different formats.
   1. `config` - configuration file containing algorithm parameters, environment variables to link external libraries and some internal configurations.
   1. `auxiliary` - auxiliary functions for logging, storing data, converting formats, etc.
   1. `astro_lab_environment.m` - script to set environment variables.
@@ -48,40 +48,43 @@ This directory contains matlab-scripts:
      - `DF_F0_K_SIGMA` - parameter of noise level estimation (coefficient of the standard deviation).
   
   1. Save changes in `matlab_scripts\config.txt`.
+  1. BM3D filtering used VBM3D and it's default parameters from [bm3d].
+     The noise level is taken as 40 (noise standard deviation assumed range is [0,255]).
+
   1. Open Matlab Command Window.
   1. Execute `run_astro_lab` application (fig. 1).
   
      ![Main Form](imgs/main_form.png)
-	 
+     
      *Fig. 1. Main form*
 
 ### Create new solution, new project and select data
-  The project is a set of input movies, a set of calculated characteristics for these movies and some auxiliary information.
+  The project is a set of input movies, characteristics calculated for these movies and some auxiliary information.
   The solution is a set of projects.
 
   1. Create new solution (bundle of projects) using main menu `Solution->New solution` (fig. 2).
      
      ![New solution](imgs/new_solution.png)
-	 
+     
      *Fig. 2. Creating new solution*
      
-     Choose directory and solution name (fig. 3). It makes directory `single_astrocytes`
-     and makes `single_astrocytes/single_astrocytes.mat` solution file.
-	 
+     Choose directory and solution name (fig. 3). It creates directory `single_astrocytes`
+     and `single_astrocytes/single_astrocytes.mat` solution file.
+     
      ![Choose directory](imgs/choose_solution_directory.png)
-	 
+     
      *Fig. 3. Choosing solution directory*
 
   1. Create new project using main menu `Project->Add new project` (fig. 4)
 
      ![Choose directory](imgs/add_new_project.png)
-	 
+     
      *Fig. 4. Add new project*
   
-     For each project you need 2 movies (fig. 5):
-        A. video with intensity of something (for example calcium activity of astrocytes) (fig. 5 [1]),
-        B. video only with camera noise (fig. 5 [2]).
-	   
+     You need for each project 2 movies (fig. 5):
+        A. video with values of intensity in each pixel (for example calcium activity of astrocytes) (fig. 5 [1]),
+        B. video with camera noise only (fig. 5 [2]).
+       
      Each video data should have same dimensions HxW. Number of frames might be different.
      
      ![New project](imgs/new_project_marked.png)
@@ -89,14 +92,14 @@ This directory contains matlab-scripts:
      *Fig. 5. Add new project*
      
      Press `Browse...` (fig. 5) for each video (don't edit path) and import video (fig. 6).
-     There is some possibilities for importing data. 
-	 - At first choose data format (fig. 6 [1]):
+     There are some possibilities for import data. 
+     - At first, choose data format (fig. 6 [1]):
        * MAT - MAT-files are binary MATLAB® files that store variables (3 dimensional HxWxK). (fig. 7)
-       * TIF - tif file with multiple images in one file. Each image should have same dimensions HxW. (fig. 8)
-       * Images list - separated images each in own file (png, bmp, jpg, tif). Each image should have equal dimensions HxW. (fig. 9)
+       * TIF - tif file with multiple images in one file. Each image should have equal dimensions HxW. (fig. 8)
+       * Images list - separated images each in it's own file (png, bmp, jpg, tif). Each image should have equal dimensions HxW. (fig. 9)
      
      - Press `Browse...` (fig.6 [2]) and select file (files in case of images list).
-       (Don't edit textbox `File list` and `Data location` by your own)
+       (Don't edit textbox `File list` and `Data location` by your self)
      
      ![Import video](imgs/import_video_marked.png)
      
@@ -120,7 +123,7 @@ This directory contains matlab-scripts:
      
      - In case of colored tif or images choose channels (red, green, blue) that you need. (Fig. 6 [5]) Average of chosen colors in pixel will be used as intensity of pixel.
      
-     - Check data size of selected data (fig. 6 [6]). (If something wrong try to change data format or data shape)
+     - Check data size of selected data (fig. 6 [6]). (If something is wrong try changing data format or data shape)
      
      - Enter frames per second of video data and real size of images in ![\mu m](https://latex.codecogs.com/gif.latex?\mu&space;m) for height and width. (Fig. 6 [7])
      
@@ -135,7 +138,7 @@ This directory contains matlab-scripts:
   1. Now form looks as it is shown on fig. 10.
   
      ![Calculuses](imgs/calculuses.png)
-	 
+     
      *Fig. 10. Main form.*
 
      * Select project (or multiple projects using Ctrl/Shift keys) from project list (fig. 11 [1]).
@@ -143,12 +146,12 @@ This directory contains matlab-scripts:
      * Select multiple calculuses from calculus list (1-10) (using Ctrl/Shift) (fig. 11 [3]).
        It's main steps for both algorithms.
      * Press `Calc` and wait (fig. 11 [4]).
-     * Last row `*** Calculating project: single_astrocyte finished` in log window and in status bar say about calculation ending.
+     * Last row `*** Calculating project: single_astrocyte finished` in log window and in status bar informs you about calculation ending.
 
      ![Selected calculuses](imgs/calculuses_2_marked.png)
-	 
+     
      *Fig. 11. Select calculuses.*
-	 
+     
   1. Save solution using main menu `Solution->Save solution`.
 
 ### Event detection
@@ -156,9 +159,9 @@ This directory contains matlab-scripts:
   1. Check that necessary projects are selected.
 
   1. Next choose radiobutton for algorithm:
-     * `ITMM algorithm` - calculating only for ITMM algorithm.
-     * `Yu-Wei algorithm` - calculating only for [Yu-Wei algorithm][yu-wei].
-     * `Compare algorithms` - calculating for both algorithms with comparisions.
+     * `ITMM algorithm` - calculating for ITMM algorithm only.
+     * `Yu-Wei algorithm` - calculating for [Yu-Wei algorithm][yu-wei] only.
+     * `Compare algorithms` - calculating for both algorithms with comparisons.
 
      We recommend choose last option (compare algorithms).
 
@@ -169,63 +172,64 @@ This directory contains matlab-scripts:
      * `Find events by dF/F0 from Yu-Wei algo` - find events using Yu-Wei dF/F0 and ITMM event detection (only events, no other calculus work for this).
 
      We recommend choose 1-3 options and press `Calc`.
-     Wait before calculation ending.
+     Wait before end of calculation process.
 
   1. Save solution using main menu `Solution->Save solution`.
 
 ### Calculating/exporting/plotting event parameters
   1. Calculate all remaining options. Select projects, select remaining calculuses, and press `Calc` (fig. 12[1-4]).
-	 
-	 ![Remaining calculuses](imgs/select_remaining_calculuses_marked.png)
-	 
-	 *Fig. 12. Select remaining calculuses.*
-	 
+     
+     ![Remaining calculuses](imgs/select_remaining_calculuses_marked.png)
+     
+     *Fig. 12. Select remaining calculuses.*
+     
 
   1. Export results. 
 
-	 After exporting export directory automaticaly created in solution directory and called `<project_name>`.
-     Inside export directory automaticaly created 3 folders for each radiobutton (ITMM, Yu-Wei, Compare) (fig. 13).
-	 
-	 ![Folder structure](imgs/export_folder_structure.png)
-	 
-	 *Fig. 13. Folder structure.*
-	 
-	 Project data saved in directory called `calculus_<project name>`.
-     You shouldn't change project data if you not sure what are you doing.
-	 	 
+     After exporting export directory is created automaticaly in solution directory and called `<project_name>`.
+     Inside export directory are created automaticaly 3 folders for each radiobutton (ITMM, Yu-Wei, Compare) (fig. 13).
+     
+     ![Folder structure](imgs/export_folder_structure.png)
+     
+     *Fig. 13. Folder structure.*
+     
+     Project data are saved in directory called `calculus_<project name>`.
+     You shouldn't change project data if you not sure what you are doing.
+         
      - Each main steps 1-15 produce and save some video data on your hard drive.
-       If you choose some option of them and press `show` video player start and you be able to play video data (fig. 14[1-3], fig. 15).
+       If you choose some option of them and press `show` video player start and you can play video data (fig. 14[1-3], fig. 15).
        Another possibility - press `avi`, and video will be exported to project export directory.
      
      ![Show video](imgs/show_video_marked.png)
-	 
-	 *Fig. 14. Show dF/F0 video.*
+     
+     *Fig. 14. Show dF/F0 video.*
 
      ![Video player](imgs/video_player.png)
-	 
-	 *Fig. 15. Video player.*
-	 
-     - Almost all of remaining calculuses (16-61) can be exported as png (button `png`) and showed (button `show`) as image or graph. Examples in fig. 16-18.
-	 
+     
+     *Fig. 15. Video player.*
+     
+     - Almost all of remaining calculuses (16-61) can be exported as png (button `png`) and shown (button `show`) as image or graph. Examples is shown fig. 16-18.
+     
      ![Projection of maximum intensity](imgs/figure_plot.png)
-	 
-	 *Fig. 16. Projection of maximum intensity.*
-	 
-	 ![Percent luminiscence](imgs/figure_plot_2.png)
-	 
-	 *Fig. 17. Percent luminiscence per frame.*
-	 
-	 ![Duration statistics](imgs/figure_plot_3.png)
-	 
-	 *Fig. 18. Duration statistics.*
-	 
+     
+     *Fig. 16. Projection of maximum intensity.*
+     
+     ![Percent luminiscence](imgs/figure_plot_2.png)
+     
+     *Fig. 17. Percent luminiscence per frame.*
+     
+     ![Duration statistics](imgs/figure_plot_3.png)
+     
+     *Fig. 18. Duration statistics.*
+     
      - Also this data can be exported as MAT-files (button `mat`) or as comma-separated values (button `csv`). 
-	 
-	 On fig. 19 shown example of exported MAT and PNG files for some project.
-	 
-	 ![Exported data](imgs/exported_data.png)
-	 
-	 *Fig. 19. Exported data.*
-	 
+     
+     On fig. 19 shown example of exported MAT and PNG files for some project.
+     
+     ![Exported data](imgs/exported_data.png)
+     
+     *Fig. 19. Exported data.*
+     
 
 [yu-wei]: https://www.ncbi.nlm.nih.gov/pubmed/24484772
+[bm3d]: http://www.cs.tut.fi/~foi/GCF-BM3D
