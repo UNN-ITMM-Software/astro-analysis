@@ -8,12 +8,12 @@ function [] = save_per_frame(calculus, properties)
     %% Properties
     id_algo = properties.id_algorithm;
     if length(id_algo) == 2
-        postfix = ' (Yu Wei) and (ITMM)';
+        postfix = '(Yu Wei) and (ITMM)';
     else
         if id_algo == 1
-            postfix = ' (ITMM)';
+            postfix = '(ITMM)';
         else if id_algo == 2
-                postfix = ' (Yu Wei)';
+                postfix = '(Yu Wei)';
             end
         end
     end

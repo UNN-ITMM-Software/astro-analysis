@@ -18,6 +18,7 @@ function [calculus] = calc_events_regions_graph(calculus, properties)
             events_3d.edges = cell(events_info.number, 1);
             events_3d.components = cell(events_info.number, 1);
             events_3d.components_ptr = cell(events_info.number, 1);
+            events_3d.border_edges = cell(events_info.number, 1);
             
             % Split events on components
             for s = 1:events_info.number
@@ -27,11 +28,9 @@ function [calculus] = calc_events_regions_graph(calculus, properties)
                 b_ptr = get_ptr(border(:, 3));
                 for k = 1:(length(b_ptr) - 1)
                     v_cur = border(b_ptr(k):(b_ptr(k + 1) - 1), 1:2);
-                    if (isempty(v_cur))
-                        continue;
-                    end
+                    if isempty(v_cur), continue; end
                     
-                    cut = connected_cut(int16(v_cur));
+                    [cut, border_edges] = connected_cut(int16(v_cur));
                     
                     v_cur = v_cur(cut(:, 1), 1:2);
                     border(b_ptr(k):(b_ptr(k + 1) - 1), 1:2) = v_cur;
@@ -39,12 +38,19 @@ function [calculus] = calc_events_regions_graph(calculus, properties)
                     to_cur = to(b_ptr(k):(b_ptr(k + 1) - 1));
                     to(b_ptr(k):(b_ptr(k + 1) - 1)) = to_cur(cut(:, 1));
                     
+                    border_edges = [border_edges + b_ptr(k) - 1, ...
+                        repmat(border(b_ptr(k), 3), size(border_edges, 1), 1)];
                     if isempty(events_3d.components{s})
                         events_3d.components{s} = cut(:, 2);
+                        events_3d.border_edges{s} = border_edges;
                     else
                         mx = events_3d.components{s}(end);
                         events_3d.components{s} = ...
                             [events_3d.components{s}; cut(:, 2) + mx];
+                        
+                        events_3d.border_edges{s} = ...
+                            [events_3d.border_edges{s}; ...
+                              border_edges];
                     end
                 end
                 events_3d.border{s} = border;
@@ -83,7 +89,7 @@ function [calculus] = calc_events_regions_graph(calculus, properties)
     add_info_log('Graph of events regions calculated.');
 end
 
-function [cut] = connected_cut(p)
+function [cut, edges] = connected_cut(p)
     n = size(p, 1);
     s = [];
     t = [];
@@ -111,6 +117,8 @@ function [cut] = connected_cut(p)
     g = graph(s, t, [], n);
     bins = conncomp(g);
     cut = int32(sortrows([1:n; bins].', 2));
+    ids(cut(:, 1)) = 1:n;
+    edges = int32([ids(s)', ids(t)']);
 end
 
 function [from, to] = get_edges(p, v)
